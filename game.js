@@ -9,36 +9,20 @@ const crosshair = document.getElementById("crosshair");
 const shotgun = document.getElementById("shotgun");
 const dog = document.getElementById("dog");
 
-// الأثوات
-const soundShoot = new Audio("https://www.soundjay.com/mechanical/gun-gunshot-01.mp3");
-const soundHit = new Audio("https://www.soundjay.com/button/button-10.mp3");
-const soundDog = new Audio("https://www.soundjay.com/button/beep-07.mp3");
+// تحضير روابط أصوات سريعة
+const soundShoot = new Audio("https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/audio/shot.mp3");
+const soundHit = new Audio("https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/audio/duck-hit.mp3");
 
 let score = 0;
 let level = 1;
 
-// تحريك النيشان وصوت إطلاق النار عند الضغط
-document.addEventListener("mousemove", (e) => {
-    const rect = playScreen.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    if (x >= 0 && x <= 800 && y >= 0 && y <= 600) {
-        crosshair.style.left = x + "px";
-        crosshair.style.top = y + "px";
-        
-        const angle = (x - 400) / 25;
-        shotgun.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-    }
-});
-
-// صوت إطلاق النار عند الكليك في الشاشة
-playScreen.addEventListener("mousedown", () => {
-    soundShoot.currentTime = 0;
-    soundShoot.play().catch(() => {}); // تشغيل صوت البندقية
-});
-
+// تشغيل الصوت عند الضغط الأول (عشان الجوال يفك الحظر)
 startBtn.addEventListener("click", () => {
+    soundShoot.play().then(() => {
+        soundShoot.pause();
+        soundShoot.currentTime = 0;
+    }).catch(()=>{});
+
     startScreen.classList.add("hidden");
     playScreen.classList.remove("hidden");
     score = 0;
@@ -46,6 +30,36 @@ startBtn.addEventListener("click", () => {
     updateHUD();
     spawnBirds();
 });
+
+// دعم التاتش والماوس للتحريك والرمي
+function handleMove(e) {
+    const rect = playScreen.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        crosshair.style.left = x + "px";
+        crosshair.style.top = y + "px";
+        const angle = (x - (rect.width/2)) / 15;
+        shotgun.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+    }
+}
+
+document.addEventListener("mousemove", handleMove);
+document.addEventListener("touchmove", handleMove);
+
+// صوت الطلقة عند اللمس أو الكليك
+playScreen.addEventListener("touchstart", playShotSound);
+playScreen.addEventListener("mousedown", playShotSound);
+
+function playShotSound(e) {
+    if (e.target.id === "exit-btn") return;
+    const shot = soundShoot.cloneNode();
+    shot.play().catch(() => {});
+}
 
 exitBtn.addEventListener("click", () => {
     location.reload();
@@ -73,24 +87,27 @@ function createBird() {
 
     bird.appendChild(face);
 
-    let posX = Math.random() * 600 + 50;
-    let posY = Math.random() * 200 + 100;
-    let dirX = (Math.random() - 0.5) * 5;
+    let posX = Math.random() * 250 + 20;
+    let posY = Math.random() * 150 + 50;
+    let dirX = (Math.random() - 0.5) * 4;
     let dirY = (Math.random() - 0.5) * 3;
 
     bird.style.left = posX + "px";
     bird.style.top = posY + "px";
 
-    bird.addEventListener("mousedown", (e) => {
-        e.stopPropagation(); // يمنع تكرار صوت الطلقة المزدوج
-        soundHit.currentTime = 0;
-        soundHit.play().catch(() => {}); // صوت الإصابة
-        
+    function hitBird(e) {
+        e.stopPropagation();
+        const hit = soundHit.cloneNode();
+        hit.play().catch(() => {});
+
         score += 250;
         updateHUD();
         bird.remove();
         checkWin();
-    });
+    }
+
+    bird.addEventListener("mousedown", hitBird);
+    bird.addEventListener("touchstart", hitBird);
 
     skyArea.appendChild(bird);
 
@@ -98,12 +115,12 @@ function createBird() {
         posX += dirX;
         posY += dirY;
 
-        if (posX <= 10 || posX >= 710) dirX *= -1;
-        if (posY <= 20 || posY >= 280) dirY *= -1;
+        if (posX <= 5 || posX >= 280) dirX *= -1;
+        if (posY <= 10 || posY >= 220) dirY *= -1;
 
         bird.style.left = posX + "px";
         bird.style.top = posY + "px";
-    }, 20);
+    }, 25);
 }
 
 function checkWin() {
@@ -122,10 +139,8 @@ function checkWin() {
 }
 
 function showDog() {
-    soundDog.currentTime = 0;
-    soundDog.play().catch(() => {}); // صوت الكلب
-    dog.style.bottom = "160px";
+    dog.style.bottom = "150px";
     setTimeout(() => {
-        dog.style.bottom = "110px";
+        dog.style.bottom = "90px";
     }, 1200);
 }
