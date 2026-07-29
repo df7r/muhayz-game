@@ -1,91 +1,141 @@
-let bird = document.getElementById("bird");
-let scoreDisplay = document.getElementById("score");
+const startScreen = document.getElementById("start-screen");
+const playScreen = document.getElementById("play-screen");
+const startBtn = document.getElementById("start-btn");
+const exitBtn = document.getElementById("exit-btn");
+const skyArea = document.getElementById("sky-area");
+const scoreVal = document.getElementById("score-val");
+const levelVal = document.getElementById("level-val");
+const crosshair = document.getElementById("crosshair");
+const shotgun = document.getElementById("shotgun");
+const dog = document.getElementById("dog");
+const dogBubble = document.getElementById("dog-bubble");
 
-let isDragging = false;
-let startX, startY;
-let currentX = 100, currentY = 300;
-let velocityX = 0, velocityY = 0;
-let gravity = 0.5;
-let isFlying = false;
 let score = 0;
+let level = 1;
+let activeBirds = [];
+let gameInterval;
 
-// تعيين الموقع الأولي للطائر
-bird.style.left = currentX + "px";
-bird.style.top = currentY + "px";
+// تتبع حركة الماوس للنيشان والبندقية
+document.addEventListener("mousemove", (e) => {
+    const rect = playScreen.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-// بدء السحب (ماوس أو لمس)
-function startDrag(e) {
-    if (isFlying) return;
-    isDragging = true;
-    let pageX = e.touches ? e.touches[0].pageX : e.pageX;
-    let pageY = e.touches ? e.touches[0].pageY : e.pageY;
-    startX = pageX;
-    startY = pageY;
+    if (x >= 0 && x <= 800 && y >= 0 && y <= 600) {
+        crosshair.style.left = x + "px";
+        crosshair.style.top = y + "px";
+        
+        // تدوير البندقية قليلاً باتجاه النيشان
+        const angle = (x - 400) / 20;
+        shotgun.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+    }
+});
+
+// بدء اللعبة
+startBtn.addEventListener("click", () => {
+    startScreen.classList.add("hidden");
+    playScreen.classList.remove("hidden");
+    score = 0;
+    level = 1;
+    updateHUD();
+    spawnBirds();
+});
+
+exitBtn.addEventListener("click", () => {
+    location.reload();
+});
+
+function updateHUD() {
+    scoreVal.innerText = String(score).padStart(6, '0');
+    levelVal.innerText = `0${level} / 05`;
 }
 
-// أثناء السحب
-function moveDrag(e) {
-    if (!isDragging) return;
-    let pageX = e.touches ? e.touches[0].pageX : e.pageX;
-    let pageY = e.touches ? e.touches[0].pageY : e.pageY;
-    
-    let dx = pageX - startX;
-    let dy = pageY - startY;
-    
-    bird.style.left = (currentX + dx) + "px";
-    bird.style.top = (currentY + dy) + "px";
-}
+// إنشاء الطيور بطيران عشوائي وصورتك
+function spawnBirds() {
+    skyArea.innerHTML = "";
+    activeBirds = [];
 
-// الإفلاق والرمي
-function endDrag(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    
-    let endX = parseInt(bird.style.left);
-    let endY = parseInt(bird.style.top);
-    
-    // حساب قوة وسرعة الرمية بناءً على مسافة السحب
-    velocityX = (currentX - endX) * 0.15;
-    velocityY = (currentY - endY) * 0.15;
-    
-    isFlying = true;
-    animate();
-}
-
-// تحريك الطائر في الهواء بالفيزياء (جاذبية وسرعة)
-function animate() {
-    if (!isFlying) return;
-    
-    let posX = parseFloat(bird.style.left);
-    let posY = parseFloat(bird.style.top);
-    
-    velocityY += gravity; // تطبيق الجاذبية
-    
-    posX += velocityX;
-    posY += velocityY;
-    
-    bird.style.left = posX + "px";
-    bird.style.top = posY + "px";
-    
-    // إذا طلع خارج الشاشة أو نزل للأرض يعود لمكانه الأصلي
-    if (posY > window.innerHeight || posX > window.innerWidth || posX < -100) {
-        resetBird();
-    } else {
-        requestAnimationFrame(animate);
+    const count = 3; // عدد الطيور
+    for (let i = 0; i < count; i++) {
+        createBird();
     }
 }
 
-function resetBird() {
-    isFlying = false;
-    bird.style.left = currentX + "px";
-    bird.style.top = currentY + "px";
+function createBird() {
+    const bird = document.createElement("div");
+    bird.className = "bird-unit";
+
+    // جسم وطاقات الطائر
+    const wings = document.createElement("div");
+    wings.className = "bird-wings";
+
+    // الوجه (الصورة الخاصة بك face.png)
+    const face = document.createElement("div");
+    face.className = "bird-face";
+    face.style.backgroundImage = "url('face.png')";
+
+    bird.appendChild(wings);
+    bird.appendChild(face);
+
+    // موقع البداية عشوائي
+    let posX = Math.random() * 600 + 50;
+    let posY = Math.random() * 200 + 150;
+    let dirX = (Math.random() - 0.5) * 4;
+    let dirY = (Math.random() - 0.5) * 3;
+
+    bird.style.left = posX + "px";
+    bird.style.top = posY + "px";
+
+    // عند إطلاق النار على الطائر (إصابته)
+    bird.addEventListener("mousedown", () => {
+        score += 250;
+        updateHUD();
+        bird.remove();
+        checkWin();
+    });
+
+    skyArea.appendChild(bird);
+
+    // تحريك الطائر
+    const flyTimer = setInterval(() => {
+        posX += dirX;
+        posY += dirY;
+
+        // ارتداد من الجدران
+        if (posX <= 10 || posX >= 710) dirX *= -1;
+        if (posY <= 20 || posY >= 300) dirY *= -1;
+
+        bird.style.left = posX + "px";
+        bird.style.top = posY + "px";
+    }, 20);
+
+    activeBirds.push({ element: bird, timer: flyTimer });
 }
 
-// أحداث الماوس واللمس للجوال
-bird.addEventListener("mousedown", startDrag);
-document.addEventListener("mousemove", moveDrag);
-document.addEventListener("mouseup", endDrag);
+function checkWin() {
+    const remaining = skyArea.querySelectorAll(".bird-unit");
+    if (remaining.length === 0) {
+        // إذا فاز بالروند
+        level++;
+        if (level > 5) {
+            alert("مبروك! أنهيت كل المستويات بنجاح 🏆");
+            location.reload();
+        } else {
+            updateHUD();
+            showDogLaugh(true);
+            setTimeout(spawnBirds, 2000);
+        }
+    }
+}
 
-bird.addEventListener("touchstart", startDrag);
-document.addEventListener("touchmove", moveDrag);
-document.addEventListener("touchend", endDrag);
+function showDogLaugh(isWin = false) {
+    dog.style.bottom = "140px";
+    if (!isWin) {
+        dogBubble.classList.remove("hidden");
+    }
+
+    setTimeout(() => {
+        dog.style.bottom = "90px";
+        dogBubble.classList.add("hidden");
+    }, 1500);
+}
