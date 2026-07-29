@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    background: #79d7ff;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    text-shadow: 3px 3px black;
+    font-size: 42px;
+    margin: 0;
+    pointer-events: none; /* عشان ما يضايقك وأنت تسحب */
+}
+
+#bird {
+    position: absolute;
+    left: 100px;
+    top: 300px;
+    width: 140px;
+    cursor: pointer;
+    touch-action: none; /* يمنع سحب الصفحة على الجوال */
+    user-select: none;
+}
+
+#score {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    font-size: 30px;
+    color: white;
+    text-shadow: 2px 2px black;
+}
