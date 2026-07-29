@@ -8,14 +8,16 @@ const levelVal = document.getElementById("level-val");
 const crosshair = document.getElementById("crosshair");
 const shotgun = document.getElementById("shotgun");
 const dog = document.getElementById("dog");
-const dogBubble = document.getElementById("dog-bubble");
+
+// الأثوات
+const soundShoot = new Audio("https://www.soundjay.com/mechanical/gun-gunshot-01.mp3");
+const soundHit = new Audio("https://www.soundjay.com/button/button-10.mp3");
+const soundDog = new Audio("https://www.soundjay.com/button/beep-07.mp3");
 
 let score = 0;
 let level = 1;
-let activeBirds = [];
-let gameInterval;
 
-// تتبع حركة الماوس للنيشان والبندقية
+// تحريك النيشان وصوت إطلاق النار عند الضغط
 document.addEventListener("mousemove", (e) => {
     const rect = playScreen.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -25,13 +27,17 @@ document.addEventListener("mousemove", (e) => {
         crosshair.style.left = x + "px";
         crosshair.style.top = y + "px";
         
-        // تدوير البندقية قليلاً باتجاه النيشان
-        const angle = (x - 400) / 20;
+        const angle = (x - 400) / 25;
         shotgun.style.transform = `translateX(-50%) rotate(${angle}deg)`;
     }
 });
 
-// بدء اللعبة
+// صوت إطلاق النار عند الكليك في الشاشة
+playScreen.addEventListener("mousedown", () => {
+    soundShoot.currentTime = 0;
+    soundShoot.play().catch(() => {}); // تشغيل صوت البندقية
+});
+
 startBtn.addEventListener("click", () => {
     startScreen.classList.add("hidden");
     playScreen.classList.remove("hidden");
@@ -50,13 +56,9 @@ function updateHUD() {
     levelVal.innerText = `0${level} / 05`;
 }
 
-// إنشاء الطيور بطيران عشوائي وصورتك
 function spawnBirds() {
     skyArea.innerHTML = "";
-    activeBirds = [];
-
-    const count = 3; // عدد الطيور
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < 3; i++) {
         createBird();
     }
 }
@@ -65,29 +67,25 @@ function createBird() {
     const bird = document.createElement("div");
     bird.className = "bird-unit";
 
-    // جسم وطاقات الطائر
-    const wings = document.createElement("div");
-    wings.className = "bird-wings";
-
-    // الوجه (الصورة الخاصة بك face.png)
     const face = document.createElement("div");
     face.className = "bird-face";
-face.style.backgroundImage = "url('E4F839DA-F495-4955-815F-CCC087174D1C.jpeg')";
+    face.style.backgroundImage = "url('E4F839DA-F495-4955-815F-CCC087174D1C.jpeg')";
 
-    bird.appendChild(wings);
     bird.appendChild(face);
 
-    // موقع البداية عشوائي
     let posX = Math.random() * 600 + 50;
-    let posY = Math.random() * 200 + 150;
-    let dirX = (Math.random() - 0.5) * 4;
+    let posY = Math.random() * 200 + 100;
+    let dirX = (Math.random() - 0.5) * 5;
     let dirY = (Math.random() - 0.5) * 3;
 
     bird.style.left = posX + "px";
     bird.style.top = posY + "px";
 
-    // عند إطلاق النار على الطائر (إصابته)
-    bird.addEventListener("mousedown", () => {
+    bird.addEventListener("mousedown", (e) => {
+        e.stopPropagation(); // يمنع تكرار صوت الطلقة المزدوج
+        soundHit.currentTime = 0;
+        soundHit.play().catch(() => {}); // صوت الإصابة
+        
         score += 250;
         updateHUD();
         bird.remove();
@@ -96,46 +94,38 @@ face.style.backgroundImage = "url('E4F839DA-F495-4955-815F-CCC087174D1C.jpeg')";
 
     skyArea.appendChild(bird);
 
-    // تحريك الطائر
-    const flyTimer = setInterval(() => {
+    setInterval(() => {
         posX += dirX;
         posY += dirY;
 
-        // ارتداد من الجدران
         if (posX <= 10 || posX >= 710) dirX *= -1;
-        if (posY <= 20 || posY >= 300) dirY *= -1;
+        if (posY <= 20 || posY >= 280) dirY *= -1;
 
         bird.style.left = posX + "px";
         bird.style.top = posY + "px";
     }, 20);
-
-    activeBirds.push({ element: bird, timer: flyTimer });
 }
 
 function checkWin() {
     const remaining = skyArea.querySelectorAll(".bird-unit");
     if (remaining.length === 0) {
-        // إذا فاز بالروند
         level++;
         if (level > 5) {
-            alert("مبروك! أنهيت كل المستويات بنجاح 🏆");
+            alert("مبروك! أنجزت كل المستويات 🏆");
             location.reload();
         } else {
             updateHUD();
-            showDogLaugh(true);
-            setTimeout(spawnBirds, 2000);
+            showDog();
+            setTimeout(spawnBirds, 1800);
         }
     }
 }
 
-function showDogLaugh(isWin = false) {
-    dog.style.bottom = "140px";
-    if (!isWin) {
-        dogBubble.classList.remove("hidden");
-    }
-
+function showDog() {
+    soundDog.currentTime = 0;
+    soundDog.play().catch(() => {}); // صوت الكلب
+    dog.style.bottom = "160px";
     setTimeout(() => {
-        dog.style.bottom = "90px";
-        dogBubble.classList.add("hidden");
-    }, 1500);
+        dog.style.bottom = "110px";
+    }, 1200);
 }
