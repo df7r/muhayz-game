@@ -2,10 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>الكلب يرمي طيور</title>
-    <!-- تم إضافة v=2 لإجبار المتصفح على قراءة التصميم الجديد فوراً -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <!-- تم تغيير الترقيم لـ v=99 لتنظيف كاش المتصفح تماماً -->
+    <link rel="stylesheet" href="style.css?v=99">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -16,8 +16,7 @@
             <div class="menu-box">
                 <h1 class="game-title">الكلب<br><span class="orange">يرمي</span><br><span class="green">طيور</span></h1>
                 <div class="menu-options">
-                    <button id="start-btn">▶ ابدأ اللعبة</button>
-                    <button onclick="alert('صوّب واضغط على الطيور لإسقاطها!')">تعليمات</button>
+                    <button id="start-btn">▶ اضغط هنا للبدء وتفعيل الصوت</button>
                 </div>
             </div>
         </div>
@@ -36,19 +35,19 @@
 
             <div id="sky-area"></div>
 
-            <!-- الكلب الضاحك بيكسل -->
+            <!-- الكلب الضاحك -->
             <div id="dog" class="dog-hidden">
                 <img src="https://mario.wiki.gallery/images/3/39/DuckHuntDog.png" alt="Dog">
             </div>
 
             <div id="crosshair"></div>
-            <!-- السلاح البكسل -->
+            <!-- السلاح -->
             <img id="shotgun" src="https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/gun.png" alt="Gun">
 
             <button id="exit-btn">خروج</button>
         </div>
     </div>
 
-    <script src="game.js"></script>
+    <script src="game.js?v=99"></script>
 </body>
 </html>
