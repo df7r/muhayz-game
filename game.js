@@ -72,7 +72,7 @@ function createBird() {
     // الوجه (الصورة الخاصة بك face.png)
     const face = document.createElement("div");
     face.className = "bird-face";
-    face.style.backgroundImage = "url('face.png')";
+face.style.backgroundImage = "url('E4F839DA-F495-4955-815F-CCC087174D1C.jpeg')";
 
     bird.appendChild(wings);
     bird.appendChild(face);
