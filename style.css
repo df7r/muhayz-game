@@ -18,14 +18,14 @@ body, html {
 }
 
 #game-container {
-    width: 800px;
-    height: 600px;
-    /* خلفية الماب بيكسل جاهزة للعبة Duck Hunt */
-    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/background.png') no-repeat center center;
-    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    max-width: 800px;
+    max-height: 600px;
+    background: #5c94fc url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/background.png') no-repeat center bottom !important;
+    background-size: cover !important;
     position: relative;
     overflow: hidden;
-    border: 4px solid #fff;
     image-rendering: pixelated;
 }
 
@@ -76,9 +76,6 @@ body, html {
     cursor: pointer;
     font-family: inherit;
 }
-.menu-options button:hover {
-    color: #ffeb3b;
-}
 
 /* HUD */
 .hud-box {
@@ -110,10 +107,10 @@ body, html {
 
 #shotgun {
     position: absolute;
-    bottom: -10px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
+    width: 100px;
     z-index: 15;
     pointer-events: none;
     image-rendering: pixelated;
@@ -122,25 +119,25 @@ body, html {
 /* الطائر والوجه */
 .bird-unit {
     position: absolute;
-    width: 70px;
-    height: 60px;
+    width: 65px;
+    height: 55px;
     z-index: 4;
     cursor: pointer;
-    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/duck/top-right/1.png') no-repeat center center;
-    background-size: contain;
+    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/duck/top-right/1.png') no-repeat center center !important;
+    background-size: contain !important;
     image-rendering: pixelated;
 }
 
 .bird-face {
     position: absolute;
-    top: -10px;
-    left: 15px;
-    width: 35px;
-    height: 35px;
+    top: -8px;
+    left: 12px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
     z-index: 5;
 }
 
