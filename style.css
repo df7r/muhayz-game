@@ -1,37 +1,239 @@
-body {
-    margin: 0;
-    background: #79d7ff;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-}
-
-h1 {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    text-align: center;
-    color: white;
-    text-shadow: 3px 3px black;
-    font-size: 42px;
-    margin: 0;
-    pointer-events: none; /* عشان ما يضايقك وأنت تسحب */
-}
-
-#bird {
-    position: absolute;
-    left: 100px;
-    top: 300px;
-    width: 140px;
-    cursor: pointer;
-    touch-action: none; /* يمنع سحب الصفحة على الجوال */
+* {
+    box-sizing: border-box;
     user-select: none;
+    -webkit-user-select: none;
 }
 
-#score {
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 800px;
+    height: 600px;
+    background: #5c94fc;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid #000;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
     position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* القائمة الرئيسية */
+.menu-box {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border: 4px solid #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    width: 340px;
+    z-index: 10;
+}
+
+.game-title {
+    color: #fff;
+    font-size: 28px;
+    line-height: 1.4;
+    margin: 0 0 20px 0;
+}
+.game-title .orange { color: #ff5722; }
+.game-title .green { color: #4caf50; }
+
+.menu-options button {
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
+}
+.menu-options button:hover {
+    color: #ffeb3b;
+}
+
+.ground-intro, .ground-play {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: #744210;
+    border-top: 15px solid #488014;
+    z-index: 5;
+}
+
+.trees-bg {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    height: 120px;
+    background: radial-gradient(circle at 20% 50%, #2e6616 40px, transparent 41%),
+                radial-gradient(circle at 80% 40%, #2e6616 50px, transparent 51%);
+    z-index: 2;
+}
+
+/* الشاشة أثناء اللعب */
+.hud-box {
+    position: absolute;
+    top: 15px;
+    background: #000;
+    border: 3px solid #fff;
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px 15px;
+    z-index: 20;
+    text-align: center;
+}
+.score-box { left: 15px; }
+.level-box { right: 15px; }
+.hud-title { font-size: 10px; color: #888; margin-bottom: 5px; }
+#score-val, #level-val { font-size: 16px; color: #fff; }
+
+.bullets-icon { margin-top: 5px; }
+.bullets-icon .b {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: red;
+    border: 1px solid #fff;
+    margin: 0 2px;
+}
+
+/* البندقية والنيشان */
+#crosshair {
+    width: 40px;
+    height: 40px;
+    border: 2px solid red;
+    border-radius: 50%;
+    position: absolute;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+#crosshair::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 6px; height: 6px;
+    background: red;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+#shotgun {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 160px;
+    background: #333;
+    border-left: 10px solid #222;
+    border-right: 10px solid #222;
+    border-top: 15px solid #111;
+    z-index: 15;
+    pointer-events: none;
+}
+
+/* الطيور والوجوه */
+.bird-unit {
+    position: absolute;
+    width: 80px;
+    height: 60px;
+    z-index: 4;
+    cursor: pointer;
+}
+
+.bird-wings {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #222;
+    clip-path: polygon(0 40%, 30% 0, 50% 40%, 70% 0, 100% 40%, 70% 100%, 30% 100%);
+}
+
+.bird-face {
+    position: absolute;
+    top: -15px;
     left: 20px;
-    top: 20px;
-    font-size: 30px;
-    color: white;
-    text-shadow: 2px 2px black;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #fff;
+    z-index: 2;
+}
+
+/* الكلب الضاحك */
+#dog {
+    position: absolute;
+    bottom: 90px;
+    right: 80px;
+    width: 70px;
+    height: 80px;
+    background: #8b4513;
+    border-radius: 40px 40px 0 0;
+    z-index: 3;
+    transition: bottom 0.4s ease;
+}
+#dog::before {
+    content: '🐶';
+    font-size: 50px;
+    position: absolute;
+    top: -10px;
+    left: 5px;
+}
+
+#dog-bubble {
+    position: absolute;
+    top: -60px;
+    right: -40px;
+    background: #fff;
+    color: #000;
+    padding: 6px 10px;
+    font-size: 10px;
+    border-radius: 10px;
+    border: 2px solid #000;
+    white-space: nowrap;
+}
+
+#exit-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 5px 10px;
+    font-size: 10px;
+    z-index: 25;
+    cursor: pointer;
 }
