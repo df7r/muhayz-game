@@ -9,29 +9,10 @@ const crosshair = document.getElementById("crosshair");
 const shotgun = document.getElementById("shotgun");
 const dog = document.getElementById("dog");
 
-// تحضير روابط أصوات سريعة
-const soundShoot = new Audio("https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/audio/shot.mp3");
-const soundHit = new Audio("https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/audio/duck-hit.mp3");
-
 let score = 0;
 let level = 1;
 
-// تشغيل الصوت عند الضغط الأول (عشان الجوال يفك الحظر)
-startBtn.addEventListener("click", () => {
-    soundShoot.play().then(() => {
-        soundShoot.pause();
-        soundShoot.currentTime = 0;
-    }).catch(()=>{});
-
-    startScreen.classList.add("hidden");
-    playScreen.classList.remove("hidden");
-    score = 0;
-    level = 1;
-    updateHUD();
-    spawnBirds();
-});
-
-// دعم التاتش والماوس للتحريك والرمي
+// تحكم اللمس والماوس
 function handleMove(e) {
     const rect = playScreen.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -51,15 +32,14 @@ function handleMove(e) {
 document.addEventListener("mousemove", handleMove);
 document.addEventListener("touchmove", handleMove);
 
-// صوت الطلقة عند اللمس أو الكليك
-playScreen.addEventListener("touchstart", playShotSound);
-playScreen.addEventListener("mousedown", playShotSound);
-
-function playShotSound(e) {
-    if (e.target.id === "exit-btn") return;
-    const shot = soundShoot.cloneNode();
-    shot.play().catch(() => {});
-}
+startBtn.addEventListener("click", () => {
+    startScreen.classList.add("hidden");
+    playScreen.classList.remove("hidden");
+    score = 0;
+    level = 1;
+    updateHUD();
+    spawnBirds();
+});
 
 exitBtn.addEventListener("click", () => {
     location.reload();
@@ -81,14 +61,20 @@ function createBird() {
     const bird = document.createElement("div");
     bird.className = "bird-unit";
 
+    // رسم أجنحة الطائر
+    const wings = document.createElement("div");
+    wings.className = "bird-wings";
+
+    // الوجه (صورتك)
     const face = document.createElement("div");
     face.className = "bird-face";
     face.style.backgroundImage = "url('E4F839DA-F495-4955-815F-CCC087174D1C.jpeg')";
 
+    bird.appendChild(wings);
     bird.appendChild(face);
 
     let posX = Math.random() * 250 + 20;
-    let posY = Math.random() * 150 + 50;
+    let posY = Math.random() * 150 + 40;
     let dirX = (Math.random() - 0.5) * 4;
     let dirY = (Math.random() - 0.5) * 3;
 
@@ -97,9 +83,6 @@ function createBird() {
 
     function hitBird(e) {
         e.stopPropagation();
-        const hit = soundHit.cloneNode();
-        hit.play().catch(() => {});
-
         score += 250;
         updateHUD();
         bird.remove();
@@ -116,7 +99,7 @@ function createBird() {
         posY += dirY;
 
         if (posX <= 5 || posX >= 280) dirX *= -1;
-        if (posY <= 10 || posY >= 220) dirY *= -1;
+        if (posY <= 10 || posY >= 200) dirY *= -1;
 
         bird.style.left = posX + "px";
         bird.style.top = posY + "px";
@@ -133,13 +116,13 @@ function checkWin() {
         } else {
             updateHUD();
             showDog();
-            setTimeout(spawnBirds, 1800);
+            setTimeout(spawnBirds, 1600);
         }
     }
 }
 
 function showDog() {
-    dog.style.bottom = "150px";
+    dog.style.bottom = "140px";
     setTimeout(() => {
         dog.style.bottom = "90px";
     }, 1200);
