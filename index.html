@@ -10,30 +10,22 @@
 <body>
 
     <div id="game-container">
-        <!-- شاشة البداية / القائمة -->
+        <!-- شاشة البداية -->
         <div id="start-screen" class="screen">
             <div class="menu-box">
                 <h1 class="game-title">الكلب<br><span class="orange">يرمي</span><br><span class="green">طيور</span></h1>
                 <div class="menu-options">
                     <button id="start-btn">▶ ابدأ اللعبة</button>
-                    <button onclick="alert('صوّب واضغط على الطيور لإسقاطها قبل ما تهرب!')">تعليمات</button>
-                    <button onclick="alert('أفضل نتيجة: ' + (localStorage.getItem('highscore') || 0))">أفضل النتائج</button>
+                    <button onclick="alert('صوّب واضغط على الطيور لإسقاطها!')">تعليمات</button>
                 </div>
             </div>
-            <div class="dog-intro"></div>
-            <div class="ground-intro"></div>
-            <div class="footer-copy">© 2026</div>
         </div>
 
-        <!-- شاشة اللعب الحقيقية -->
+        <!-- شاشة اللعب -->
         <div id="play-screen" class="screen hidden">
-            <!-- الهيدر والمعلومات -->
             <div class="hud-box score-box">
                 <div class="hud-title">النتيجة</div>
                 <div id="score-val">000000</div>
-                <div class="bullets-icon">
-                    <span class="b"></span><span class="b"></span><span class="b"></span>
-                </div>
             </div>
 
             <div class="hud-box level-box">
@@ -41,22 +33,18 @@
                 <div id="level-val">01 / 05</div>
             </div>
 
-            <!-- منطقة السماء والطيور -->
             <div id="sky-area"></div>
 
-            <!-- الكلب -->
+            <!-- الكلب الضاحك بيكسل -->
             <div id="dog" class="dog-hidden">
-                <div id="dog-bubble" class="hidden">هاهاها!<br>ما أصبت!</div>
+                <img src="https://mario.wiki.gallery/images/3/39/DuckHuntDog.png" alt="Dog">
             </div>
 
-            <!-- البندقية والشعبات تحت -->
             <div id="crosshair"></div>
-            <div id="shotgun"></div>
+            <!-- السلاح البكسل -->
+            <img id="shotgun" src="https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/gun.png" alt="Gun">
 
-            <div class="ground-play"></div>
-            <div class="trees-bg"></div>
-
-            <button id="exit-btn">خروج<br><small>ESC</small></button>
+            <button id="exit-btn">خروج</button>
         </div>
     </div>
 
