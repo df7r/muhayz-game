@@ -9,22 +9,24 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #111;
+    background-color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Press Start 2P', cursive, Arial, sans-serif;
+    font-family: 'Press Start 2P', cursive, sans-serif;
     overflow: hidden;
 }
 
 #game-container {
     width: 800px;
     height: 600px;
-    background: #5c94fc;
+    /* خلفية الماب بيكسل جاهزة للعبة Duck Hunt */
+    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/background.png') no-repeat center center;
+    background-size: cover;
     position: relative;
     overflow: hidden;
-    border: 4px solid #000;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    border: 4px solid #fff;
+    image-rendering: pixelated;
 }
 
 .screen {
@@ -39,25 +41,25 @@ body, html {
     display: none !important;
 }
 
-/* القائمة الرئيسية */
+/* القائمة */
 .menu-box {
     position: absolute;
-    top: 40px;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
     background: #000;
     border: 4px solid #fff;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 20px;
     text-align: center;
-    width: 340px;
+    width: 320px;
     z-index: 10;
 }
 
 .game-title {
     color: #fff;
-    font-size: 28px;
-    line-height: 1.4;
+    font-size: 24px;
+    line-height: 1.5;
     margin: 0 0 20px 0;
 }
 .game-title .orange { color: #ff5722; }
@@ -69,67 +71,35 @@ body, html {
     background: transparent;
     color: #fff;
     border: none;
-    font-size: 14px;
+    font-size: 12px;
     padding: 10px;
     cursor: pointer;
-    text-align: center;
     font-family: inherit;
 }
 .menu-options button:hover {
     color: #ffeb3b;
 }
 
-.ground-intro, .ground-play {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 100px;
-    background: #744210;
-    border-top: 15px solid #488014;
-    z-index: 5;
-}
-
-.trees-bg {
-    position: absolute;
-    bottom: 100px;
-    width: 100%;
-    height: 120px;
-    background: radial-gradient(circle at 20% 50%, #2e6616 40px, transparent 41%),
-                radial-gradient(circle at 80% 40%, #2e6616 50px, transparent 51%);
-    z-index: 2;
-}
-
-/* الشاشة أثناء اللعب */
+/* HUD */
 .hud-box {
     position: absolute;
     top: 15px;
     background: #000;
-    border: 3px solid #fff;
-    border-radius: 8px;
+    border: 2px solid #fff;
     color: #fff;
-    padding: 10px 15px;
+    padding: 8px 12px;
     z-index: 20;
     text-align: center;
 }
 .score-box { left: 15px; }
 .level-box { right: 15px; }
-.hud-title { font-size: 10px; color: #888; margin-bottom: 5px; }
-#score-val, #level-val { font-size: 16px; color: #fff; }
+.hud-title { font-size: 8px; color: #aaa; margin-bottom: 4px; }
+#score-val, #level-val { font-size: 14px; }
 
-.bullets-icon { margin-top: 5px; }
-.bullets-icon .b {
-    display: inline-block;
-    width: 8px;
-    height: 14px;
-    background: red;
-    border: 1px solid #fff;
-    margin: 0 2px;
-}
-
-/* البندقية والنيشان */
+/* النيشان والسلاح */
 #crosshair {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border: 2px solid red;
     border-radius: 50%;
     position: absolute;
@@ -137,92 +107,55 @@ body, html {
     transform: translate(-50%, -50%);
     z-index: 100;
 }
-#crosshair::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 6px; height: 6px;
-    background: red;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-}
 
 #shotgun {
     position: absolute;
-    bottom: 0;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 160px;
-    background: #333;
-    border-left: 10px solid #222;
-    border-right: 10px solid #222;
-    border-top: 15px solid #111;
+    width: 120px;
     z-index: 15;
     pointer-events: none;
+    image-rendering: pixelated;
 }
 
-/* الطيور والوجوه */
+/* الطائر والوجه */
 .bird-unit {
     position: absolute;
-    width: 80px;
+    width: 70px;
     height: 60px;
     z-index: 4;
     cursor: pointer;
-}
-
-.bird-wings {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #222;
-    clip-path: polygon(0 40%, 30% 0, 50% 40%, 70% 0, 100% 40%, 70% 100%, 30% 100%);
+    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/duck/top-right/1.png') no-repeat center center;
+    background-size: contain;
+    image-rendering: pixelated;
 }
 
 .bird-face {
     position: absolute;
-    top: -15px;
-    left: 20px;
-    width: 40px;
-    height: 40px;
+    top: -10px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
-    border: 2px solid #fff;
-    z-index: 2;
+    border: 1px solid #fff;
+    z-index: 5;
 }
 
-/* الكلب الضاحك */
+/* الكلب */
 #dog {
     position: absolute;
-    bottom: 90px;
-    right: 80px;
-    width: 70px;
-    height: 80px;
-    background: #8b4513;
-    border-radius: 40px 40px 0 0;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 3;
     transition: bottom 0.4s ease;
 }
-#dog::before {
-    content: '🐶';
-    font-size: 50px;
-    position: absolute;
-    top: -10px;
-    left: 5px;
-}
-
-#dog-bubble {
-    position: absolute;
-    top: -60px;
-    right: -40px;
-    background: #fff;
-    color: #000;
-    padding: 6px 10px;
-    font-size: 10px;
-    border-radius: 10px;
-    border: 2px solid #000;
-    white-space: nowrap;
+#dog img {
+    width: 80px;
+    image-rendering: pixelated;
 }
 
 #exit-btn {
@@ -232,8 +165,9 @@ body, html {
     background: #000;
     color: #fff;
     border: 2px solid #fff;
-    padding: 5px 10px;
+    padding: 5px 8px;
     font-size: 10px;
     z-index: 25;
     cursor: pointer;
+    font-family: inherit;
 }
