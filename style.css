@@ -22,11 +22,10 @@ body, html {
     height: 100vh;
     max-width: 800px;
     max-height: 600px;
-    background: #5c94fc url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/background.png') no-repeat center bottom !important;
-    background-size: cover !important;
+    background: #6b8cff;
     position: relative;
     overflow: hidden;
-    image-rendering: pixelated;
+    border: 4px solid #fff;
 }
 
 .screen {
@@ -68,13 +67,14 @@ body, html {
 .menu-options button {
     display: block;
     width: 100%;
-    background: transparent;
+    background: #4caf50;
     color: #fff;
-    border: none;
+    border: 2px solid #fff;
     font-size: 12px;
-    padding: 10px;
+    padding: 12px;
     cursor: pointer;
     font-family: inherit;
+    border-radius: 6px;
 }
 
 /* HUD */
@@ -93,10 +93,33 @@ body, html {
 .hud-title { font-size: 8px; color: #aaa; margin-bottom: 4px; }
 #score-val, #level-val { font-size: 14px; }
 
+/* البيئة والأرض والشجر */
+.pixel-ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 110px;
+    background: #8b5a2b;
+    border-top: 20px solid #48a02c;
+    z-index: 3;
+}
+
+.pixel-tree {
+    position: absolute;
+    bottom: 120px;
+    left: 40px;
+    width: 90px;
+    height: 140px;
+    background: #2d701e;
+    border-radius: 50px 50px 10px 10px;
+    z-index: 2;
+    box-shadow: 120px 20px 0 -20px #225917;
+}
+
 /* النيشان والسلاح */
 #crosshair {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     border: 2px solid red;
     border-radius: 50%;
     position: absolute;
@@ -110,49 +133,51 @@ body, html {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100px;
     z-index: 15;
     pointer-events: none;
-    image-rendering: pixelated;
 }
 
-/* الطائر والوجه */
+/* الطائر والوجه والأجنحة */
 .bird-unit {
     position: absolute;
-    width: 65px;
-    height: 55px;
+    width: 70px;
+    height: 60px;
     z-index: 4;
     cursor: pointer;
-    background: url('https://raw.githubusercontent.com/taniarascia/duck-hunt/master/dist/assets/images/duck/top-right/1.png') no-repeat center center !important;
-    background-size: contain !important;
-    image-rendering: pixelated;
+}
+
+.bird-wings {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 70px;
+    height: 35px;
+    background: #222;
+    clip-path: polygon(0 0, 35% 40%, 50% 0, 65% 40%, 100% 0, 75% 100%, 25% 100%);
+    z-index: 1;
 }
 
 .bird-face {
     position: absolute;
-    top: -8px;
-    left: 12px;
-    width: 38px;
-    height: 38px;
+    top: 0;
+    left: 17px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
     border: 2px solid #fff;
-    z-index: 5;
+    z-index: 2;
 }
 
 /* الكلب */
 #dog {
     position: absolute;
-    bottom: 110px;
+    bottom: 90px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 3;
-    transition: bottom 0.4s ease;
-}
-#dog img {
-    width: 80px;
-    image-rendering: pixelated;
+    z-index: 2;
+    transition: bottom 0.3s ease;
 }
 
 #exit-btn {
@@ -162,7 +187,7 @@ body, html {
     background: #000;
     color: #fff;
     border: 2px solid #fff;
-    padding: 5px 8px;
+    padding: 6px 10px;
     font-size: 10px;
     z-index: 25;
     cursor: pointer;
